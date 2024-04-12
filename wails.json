@@ -1,0 +1,13 @@
+{
+  "$schema": "https://wails.io/schemas/config.v2.json",
+  "name": "DBPull",
+  "outputfilename": "DBPull",
+  "frontend:install": "npm install",
+  "frontend:build": "npm run build",
+  "frontend:dev:watcher": "npm run dev",
+  "frontend:dev:serverUrl": "auto",
+  "author": {
+    "name": "Juan Pratama Wahyu Talendra",
+    "email": "108502921+juanPWT@users.noreply.github.com"
+  }
+}
