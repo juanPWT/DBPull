@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PrimaryLayout from "../layout/PrimaryLayout";
 import Widget from "./components/Widget";
 import TemplateSave from "./components/TemplateSave";

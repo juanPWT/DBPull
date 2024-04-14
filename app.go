@@ -57,7 +57,6 @@ func (a *App) TestConnectDB(url string, db DatabaseType) bool {
 }
 
 // save template to file
-
 type DatabaseConfig struct {
 	Id   int    `json:"id"`
 	Name string `json:"name"`
@@ -106,7 +105,6 @@ func (a *App) SaveTemplateToFile(url string, db string, name string) string {
 
 	successMsg := []byte("Success save to config")
 	return string(successMsg)
-
 }
 
 // read data from configDB.json
@@ -171,4 +169,45 @@ func (a *App) DeleteAllConfig() bool {
 	}
 
 	return false
+}
+
+func (a *App) GetAllTable(id int) []string {
+	// get data by id
+	data := a.AllConfigDB()
+	var url string
+	var database string
+
+	for _, v := range data {
+		if v.Id == id {
+			url = v.Url
+			database = v.Db
+		}
+	}
+
+	var tables []string
+
+	if database == "mysql" {
+		db, err := gorm.Open(mysql.Open(url), &gorm.Config{})
+		if err != nil {
+			fmt.Println("Error: cannot connect to database")
+		}
+
+		db.Raw("SHOW TABLES").Scan(&tables)
+
+		fmt.Println(tables)
+	} else if database == "postgres" {
+		db, err := gorm.Open(postgres.Open(url), &gorm.Config{})
+		if err != nil {
+			fmt.Println("Error: cannot connect to database")
+		}
+
+		db.Raw("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'").Scan(&tables)
+
+		fmt.Println(tables)
+	} else {
+		fmt.Println("Error: database not supported")
+		return nil
+	}
+
+	return tables
 }

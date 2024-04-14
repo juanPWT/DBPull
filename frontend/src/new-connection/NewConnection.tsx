@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PrimaryLayout from "../layout/PrimaryLayout";
 import { Link, useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
@@ -63,6 +63,7 @@ const NewConnection = () => {
           <div className="w-full flex justify-center items-center gap-4">
             <select
               onChange={onChange}
+              value={db}
               name="db"
               id="db"
               className="w-full rounded-md text-slate-900 p-2 ring-1 ring-slate-900 focus:outline-sky-500"

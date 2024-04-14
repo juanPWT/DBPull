@@ -14,6 +14,10 @@ export function DeleteConfigDB(arg1) {
   return window['go']['main']['App']['DeleteConfigDB'](arg1);
 }
 
+export function GetAllTable(arg1) {
+  return window['go']['main']['App']['GetAllTable'](arg1);
+}
+
 export function SaveTemplateToFile(arg1, arg2, arg3) {
   return window['go']['main']['App']['SaveTemplateToFile'](arg1, arg2, arg3);
 }

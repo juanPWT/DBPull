@@ -2,7 +2,7 @@ import React from "react";
 import toast from "react-hot-toast";
 import { CiTrash } from "react-icons/ci";
 import { DeleteConfigDB } from "../../../wailsjs/go/main/App";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 type CardTemplateProps = {
   id: number;
@@ -29,7 +29,7 @@ const CardTemplate: React.FC<CardTemplateProps> = ({ db, name, url, id }) => {
 
   return (
     <div className="w-full bg-gray-500 px-2 py-4 rounded-md shadow-md text-white flex items-center justify-between">
-      <a href="" className="flex group">
+      <Link to={`/dashboard/${id}?db=${name}`} className="flex group">
         <p className="group-hover:text-sky-500">{name}</p>
         {/* db tag  */}
         {db === "mysql" ? (
@@ -41,7 +41,7 @@ const CardTemplate: React.FC<CardTemplateProps> = ({ db, name, url, id }) => {
             Postgres
           </span>
         )}
-      </a>
+      </Link>
       <div className="">
         <button
           type="button"

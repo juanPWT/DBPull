@@ -18,17 +18,17 @@ const TemplateSave = () => {
   const handleClearAll = () => {
     DeleteAllConfig().then(() => {
       toast.success("clear all config");
-      window.location.reload();
+      navigate(0);
     });
   };
 
   useEffect(() => {
-    AllConfigDB().then((data) => {
+    AllConfigDB().then((data: Array<configProps>) => {
       if (data.length !== 0) {
         setAllConfig(data);
       }
     });
-  }, []);
+  }, [AllConfigDB]);
 
   return (
     <div className="w-full bg-gray-200 shadow-md rounded-md  p-4 flex flex-col">

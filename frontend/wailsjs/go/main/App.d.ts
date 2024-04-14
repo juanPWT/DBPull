@@ -8,6 +8,8 @@ export function DeleteAllConfig():Promise<boolean>;
 
 export function DeleteConfigDB(arg1:number):Promise<boolean>;
 
+export function GetAllTable(arg1:number):Promise<Array<string>>;
+
 export function SaveTemplateToFile(arg1:string,arg2:string,arg3:string):Promise<string>;
 
 export function TestConnectDB(arg1:string,arg2:main.DatabaseType):Promise<boolean>;
