@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { GetAllTable } from "../../../wailsjs/go/main/App";
 import { useQuery } from "../../utils/useQuery";
+import { useNavigate, useLocation } from "react-router-dom";
+import toast from "react-hot-toast";
 
 type TableProps = {
   name: string;
@@ -14,12 +16,24 @@ type SidebarProps = {
 const Sidebar: React.FC<SidebarProps> = ({ id }) => {
   const [tables, setTables] = useState<Array<string>>([]);
   const nameConfig = useQuery().get("db");
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
 
   useEffect(() => {
     GetAllTable(id).then((res: Array<string>) => {
+      if (res === null) {
+        navigate("/");
+        toast.error("cant connect to database");
+      }
+
       if (res.length !== 0) setTables(res);
     });
-  }, []);
+  }, [id, GetAllTable]);
+
+  const getValues = (table: string) => {
+    const to = `${pathname}?db=${nameConfig}&table=${table}`;
+    navigate(to);
+  };
 
   return (
     <div className="w-full rounded-md ring-1 ring-slate-900 bg-gray-100 p-3 flex flex-col max-w-xs">
@@ -29,7 +43,13 @@ const Sidebar: React.FC<SidebarProps> = ({ id }) => {
           <div className="text-center">No tables</div>
         ) : (
           tables.map((table, i) => {
-            return <ButtonTable key={i} name={table} />;
+            return (
+              <ButtonTable
+                key={i}
+                name={table}
+                onClick={() => getValues(table)}
+              />
+            );
           })
         )}
       </div>
@@ -45,7 +65,6 @@ const ButtonTable: React.FC<TableProps> = ({ name, onClick }) => {
       className="w-full flex justify-between items-center bg-white p-2 hover:bg-gray-200"
     >
       <div className="text-sm">{name}</div>
-      {/* <div className="text-sm">2</div> */}
     </button>
   );
 };

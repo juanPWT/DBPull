@@ -9,6 +9,7 @@ const NewConnection = () => {
   const [db, setDb] = useState("");
   const [name, setName] = useState("");
   const [url, setUrl] = useState("");
+  const [example, setExample] = useState("");
   const navigate = useNavigate();
 
   const testConnect = () => {
@@ -43,9 +44,15 @@ const NewConnection = () => {
       setUrl(
         "[user]:[password]@tcp(127.0.0.1:3306)/[dbname]?charset=utf8mb4&parseTime=True&loc=Local"
       );
+      setExample(
+        "(root:password@tcp(127.0.0.1:3306)/myDatabase?charset=utf8mb4&parseTime=True&loc=Local), [user] for the username of database, [password] for the password of database, [dbname] for the name of database"
+      );
     } else {
       setUrl(
         "host=localhost user=postgres password=password dbname=dbname port=5432 sslmode=disable TimeZone=Asia/Shanghai"
+      );
+      setExample(
+        "(host=localhost user=postgres password=password dbname=dbname port=5432 sslmode=disable TimeZone=Asia/Shanghai), user= for the username of database, password= for the password of database, dbname= for the name of database"
       );
     }
   };
@@ -63,7 +70,7 @@ const NewConnection = () => {
           <div className="w-full flex justify-center items-center gap-4">
             <select
               onChange={onChange}
-              value={db}
+              defaultValue={db}
               name="db"
               id="db"
               className="w-full rounded-md text-slate-900 p-2 ring-1 ring-slate-900 focus:outline-sky-500"
@@ -91,7 +98,10 @@ const NewConnection = () => {
           </div>
           <div className="w-full flex flex-col gap-2">
             <label htmlFor="url" className="font-semibold">
-              Enter your url database
+              Enter your url database{" "}
+              <p className="font-light text-slate-900 italic">
+                "for example: {example} "
+              </p>
             </label>
             <textarea
               value={url}

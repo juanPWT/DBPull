@@ -1,39 +1,104 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { useQuery } from "../../utils/useQuery";
+import { GetColumnTable, GetValuesTable } from "../../../wailsjs/go/main/App";
+import toast from "react-hot-toast";
+import { transformArray, TransformObject } from "../../utils/transformArray";
 
 type TableProps = {
-  name: string;
+  id: number;
 };
 
-const Table: React.FC<TableProps> = ({ name }) => {
+const Table: React.FC<TableProps> = ({ id }) => {
+  const [column, setColumn] = useState<Array<string>>([]);
+  const [values, setValues] = useState<Array<any>>([]);
+  const table = useQuery().get("table");
+
+  useEffect(() => {
+    if (table != null) {
+      // get column
+      GetColumnTable(table, id).then((res: Array<string>) => {
+        if (res != null) {
+          setColumn(res);
+        } else {
+          toast.error("error: failed to read, chack your database");
+        }
+      });
+      // get value
+      GetValuesTable(table, id).then((res: Array<any>) => {
+        if (res != null) {
+          const data: TransformObject[] = transformArray(res);
+          setValues(data);
+        } else {
+          console.log("kosong bro");
+        }
+      });
+    }
+  }, [table, GetColumnTable]);
+
   return (
-    <div className="w-full flex flex-col  items-center p-4 bg-gray-100 ring-1 ring-slate-900 rounded-md gap-2">
-      <h1 className="text-xl text-slate-900 font-semibold">{name}</h1>
-      <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-          <tr>
-            <th scope="col" className="py-3 px-6">
-              col 1
-            </th>
-            <th scope="col" className="py-3 px-6">
-              col 2
-            </th>
-            <th scope="col" className="py-3 px-6">
-              col 3
-            </th>
-            <th scope="col" className="py-3 px-6">
-              col 4
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-            <td className="py-4 px-6">col 1</td>
-            <td className="py-4 px-6">col 2</td>
-            <td className="py-4 px-6">col 3</td>
-            <td className="py-4 px-6">col 4</td>
-          </tr>
-        </tbody>
-      </table>
+    <div className="w-full overflow-x-auto">
+      <div className="w-full flex flex-col items-center p-4 bg-gray-100 rounded-md gap-2 break-words">
+        <h1 className="text-xl text-slate-900 font-semibold">{table}</h1>
+        {table != null ? (
+          <div className="w-full overflow-x-auto">
+            <table className="w-full text-xs text-center text-gray-500 dark:text-gray-400 p-4">
+              <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 ">
+                <tr>
+                  {column.length !== 0 && column ? (
+                    column.map((data, i) => {
+                      return (
+                        <th key={i} scope="col" className="py-3 px-6">
+                          {data}
+                        </th>
+                      );
+                    })
+                  ) : (
+                    <th scope="col" className="py-3 px-6">
+                      No Column Table
+                    </th>
+                  )}
+                </tr>
+              </thead>
+              <tbody>
+                {values.length !== 0 ? (
+                  values.map((value, j) => {
+                    return (
+                      <tr
+                        key={j}
+                        className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                      >
+                        {column.map((data, i) => {
+                          return (
+                            <td key={i} className="py-4 px-6 sm:px-4">
+                              {value[`col_${i}`] ? (
+                                value[`col_${i}`]
+                              ) : (
+                                <span className="font-light text-red-500">
+                                  null
+                                </span>
+                              )}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    );
+                  })
+                ) : (
+                  <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                    <td className="py-4 px-6 sm:px-4">No data</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="w-full text-sm flex justify-center items-center text-gray-500 dark:text-gray-400">
+            <h1 className="text-xl font-semibold text-slate-900">
+              Choose table
+            </h1>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
