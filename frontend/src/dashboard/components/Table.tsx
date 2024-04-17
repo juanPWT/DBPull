@@ -26,7 +26,10 @@ const Table: React.FC<TableProps> = ({ id }) => {
       // get value
       GetValuesTable(table, id).then((res: Array<any>) => {
         if (res != null) {
+          console.log("res :", res);
+
           const data: TransformObject[] = transformArray(res);
+          console.log("data :", data);
           setValues(data);
         } else {
           console.log("kosong bro");

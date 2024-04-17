@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"math/rand"
 	"os"
+	"strings"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
@@ -220,7 +221,6 @@ func (a *App) GetAllTable(id int) []string {
 }
 
 // get table column
-// var columnTypes *[]*sql.ColumnType
 
 func (a *App) GetColumnTable(table string, id int) []string {
 	data := a.AllConfigDB()
@@ -253,18 +253,13 @@ func (a *App) GetColumnTable(table string, id int) []string {
 		return nil
 	}
 
-	// get column types
-	// columnType, _ := rows.ColumnTypes()
-	// if columnType != nil {
-	// 	columnTypes = &columnType
-	// }
-
 	return column
 }
 
 // get values table
 func (a *App) GetValuesTable(table string, id int) []map[string]interface{} {
 	columns := a.GetColumnTable(table, id)
+
 	data := a.AllConfigDB()
 	var db string
 	var query string
@@ -276,9 +271,14 @@ func (a *App) GetValuesTable(table string, id int) []map[string]interface{} {
 	}
 
 	if db == "mysql" {
-		query = "SELECT * FROM " + table
+		query = "SELECT " + strings.Join(columns, ", ") + " FROM " + table
 	} else if db == "postgres" {
-		query = "SELECT * FROM \"" + table + "\""
+		// tranfroms string to string with doubel quote "id", "name"
+		var columnList []string
+		for _, v := range columns {
+			columnList = append(columnList, fmt.Sprintf("\"%s\"", v))
+		}
+		query = "SELECT " + strings.Join(columnList, ", ") + " FROM \"" + table + "\""
 	}
 
 	rows, err := DB.Raw(query).Rows()
@@ -289,27 +289,28 @@ func (a *App) GetValuesTable(table string, id int) []map[string]interface{} {
 
 	defer rows.Close()
 
-	// Membuat map untuk menyimpan data dari setiap baris
+	// mapping for value
 	var results []map[string]interface{}
 
 	for rows.Next() {
-		values := make([]interface{}, len(columns))
+		rowData := make(map[string]interface{})
 
-		for i := range values {
-			values[i] = new(interface{})
+		values := make([]interface{}, len(columns))
+		valuesPtrs := make([]interface{}, len(columns))
+
+		for i := range valuesPtrs {
+			valuesPtrs[i] = &values[i]
 		}
 
-		if err := rows.Scan(values...); err != nil {
+		if err := rows.Scan(valuesPtrs...); err != nil {
 			fmt.Println("Error:", err)
 			return nil
 		}
 
-		rowData := make(map[string]interface{})
-
 		for i, col := range columns {
-			val := *(values[i].(*interface{}))
+			val := values[i]
 			if val != nil {
-				// Konversi nilai byte menjadi string jika tipe data adalah []uint8 (byte)
+				// conversion value byte to string if type data is []uint8 (byte)
 				if dataBytes, ok := val.([]uint8); ok {
 					rowData[col] = string(dataBytes)
 				} else {
@@ -318,7 +319,6 @@ func (a *App) GetValuesTable(table string, id int) []map[string]interface{} {
 			} else {
 				rowData[col] = nil
 			}
-
 		}
 
 		results = append(results, rowData)
