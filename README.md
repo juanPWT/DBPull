@@ -1,6 +1,6 @@
 <h1 align="center">
   <br>
-  <a href="http://www.amitmerchant.com/electron-markdownify"><img src="https://raw.githubusercontent.com/amitmerchant1990/electron-markdownify/master/app/img/markdownify.png" alt="Markdownify" width="200"></a>
+  <a href="http://www.amitmerchant.com/electron-markdownify"><img src="frontend/src/assets/images/DBPull.png" alt="Markdownify" width="200"></a>
   <br>
      DBPull
   <br>
@@ -13,7 +13,7 @@
   <a href="#download">Download</a> •
 </p>
 
-![screenshot](https://raw.githubusercontent.com/amitmerchant1990/electron-markdownify/master/app/img/markdownify.gif)
+![screenshot](frontend/src/assets/images/demo.gif)
 
 ## Key Features (In the future there will be more features)
 
