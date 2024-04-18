@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useQuery } from "../../utils/useQuery";
 import { GetColumnTable, GetValuesTable } from "../../../wailsjs/go/main/App";
 import toast from "react-hot-toast";
-import { transformArray, TransformObject } from "../../utils/transformArray";
 
 type TableProps = {
   id: number;
@@ -26,14 +25,13 @@ const Table: React.FC<TableProps> = ({ id }) => {
       // get value
       GetValuesTable(table, id).then((res: Array<any>) => {
         if (res != null) {
-          const data: TransformObject[] = transformArray(res);
-          setValues(data);
+          setValues(res);
         } else {
-          console.log("kosong bro");
+          setValues([]);
         }
       });
     }
-  }, [table, GetColumnTable]);
+  }, [table, GetColumnTable, GetValuesTable, id]);
 
   return (
     <div className="w-full overflow-x-auto">
@@ -70,8 +68,8 @@ const Table: React.FC<TableProps> = ({ id }) => {
                         {column.map((data, i) => {
                           return (
                             <td key={i} className="py-4 px-6 sm:px-4">
-                              {value[`col_${i}`] ? (
-                                value[`col_${i}`]
+                              {value[`${data}`] ? (
+                                value[`${data}`]
                               ) : (
                                 <span className="font-light text-red-500">
                                   null
@@ -85,7 +83,9 @@ const Table: React.FC<TableProps> = ({ id }) => {
                   })
                 ) : (
                   <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                    <td className="py-4 px-6 sm:px-4">No data</td>
+                    <td className="py-4 px-6 sm:px-4" colSpan={column.length}>
+                      No data
+                    </td>
                   </tr>
                 )}
               </tbody>
