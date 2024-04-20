@@ -326,3 +326,59 @@ func (a *App) GetValuesTable(table string, id int) []map[string]interface{} {
 
 	return results
 }
+
+type TableType struct {
+	Column string `json:"column"`
+	Type   string `json:"type"`
+}
+
+// get sructure column
+func (a *App) GetTypeColumn(table string, id int) []TableType {
+	columns := a.GetColumnTable(table, id)
+	data := a.AllConfigDB()
+	var query string
+	var db string
+
+	for _, v := range data {
+		if v.Id == id {
+			db = v.Db
+		}
+	}
+
+	if db == "mysql" {
+		query = "SELECT " + strings.Join(columns, ", ") + " FROM " + table
+	} else if db == "postgres" {
+		// tranfroms string to string with doubel quote "id", "name"
+		var columnList []string
+		for _, v := range columns {
+			columnList = append(columnList, fmt.Sprintf("\"%s\"", v))
+		}
+		query = "SELECT " + strings.Join(columnList, ", ") + " FROM \"" + table + "\""
+	}
+
+	rows, err := DB.Raw(query).Rows()
+	if err != nil {
+		fmt.Println("Error:", err)
+		return nil
+	}
+
+	defer rows.Close()
+
+	// get column type
+	var types []TableType
+
+	columnTypes, err := rows.ColumnTypes()
+	if err != nil {
+		fmt.Println("Error:", err)
+		return nil
+	}
+
+	for _, v := range columnTypes {
+		types = append(types, TableType{
+			Column: v.Name(),
+			Type:   v.DatabaseTypeName(),
+		})
+	}
+
+	return types
+}
