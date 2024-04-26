@@ -13,7 +13,7 @@ const Values: React.FC<ValuesProps> = ({ column, id, table, values }) => {
     <div className="w-full flex flex-col items-center p-4 bg-gray-100 rounded-md gap-2 break-words">
       {table != null ? (
         <>
-          <NavTable id={id} table={table ?? "undifined table"} />
+          <NavTable id={id} table={table ?? "undefined table"} />
           <div className="w-full overflow-x-auto">
             <table className="w-full text-xs text-center text-gray-500 dark:text-gray-400 p-4">
               <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 ">
@@ -45,7 +45,15 @@ const Values: React.FC<ValuesProps> = ({ column, id, table, values }) => {
                           return (
                             <td key={i} className="py-4 px-6 sm:px-4">
                               {value[`${data}`] ? (
-                                value[`${data}`]
+                                String(value[`${data}`])
+                              ) : value[`${data}`] === false ? (
+                                <span className="font-light text-red-500">
+                                  false
+                                </span>
+                              ) : value[`${data}`] === true ? (
+                                <span className="font-light text-green-500">
+                                  true
+                                </span>
                               ) : (
                                 <span className="font-light text-red-500">
                                   null

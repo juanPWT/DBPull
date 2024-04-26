@@ -8,6 +8,7 @@ import {
 import toast from "react-hot-toast";
 import Values from "./Values";
 import Structure from "./Structure";
+import ModalAddValue from "./ModalAddValue";
 
 type TableProps = {
   id: number;
@@ -58,6 +59,9 @@ const Table: React.FC<TableProps> = ({ id }) => {
   if (nav === "values" || nav === null) {
     return (
       <div className="w-full overflow-x-auto">
+        {table != null && (nav === "values" || nav === null) ? (
+          <ModalAddValue table={table} columns={columnType} id={id} />
+        ) : null}
         <Values column={column} id={id} table={table ?? null} values={values} />
       </div>
     );

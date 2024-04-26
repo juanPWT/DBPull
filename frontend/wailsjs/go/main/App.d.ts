@@ -16,6 +16,8 @@ export function GetTypeColumn(arg1:string,arg2:number):Promise<Array<main.TableT
 
 export function GetValuesTable(arg1:string,arg2:number):Promise<Array<{[key: string]: any}>>;
 
+export function InsertRow(arg1:{[key: string]: any},arg2:number,arg3:string):Promise<string>;
+
 export function SaveTemplateToFile(arg1:string,arg2:string,arg3:string):Promise<string>;
 
 export function TestConnectDB(arg1:string,arg2:main.DatabaseType):Promise<boolean>;
