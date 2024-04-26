@@ -18,6 +18,20 @@ export namespace main {
 	        this.db = source["db"];
 	    }
 	}
+	export class TableType {
+	    column: string;
+	    type: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new TableType(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.column = source["column"];
+	        this.type = source["type"];
+	    }
+	}
 
 }
 

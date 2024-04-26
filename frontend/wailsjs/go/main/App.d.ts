@@ -12,7 +12,11 @@ export function GetAllTable(arg1:number):Promise<Array<string>>;
 
 export function GetColumnTable(arg1:string,arg2:number):Promise<Array<string>>;
 
+export function GetTypeColumn(arg1:string,arg2:number):Promise<Array<main.TableType>>;
+
 export function GetValuesTable(arg1:string,arg2:number):Promise<Array<{[key: string]: any}>>;
+
+export function InsertRow(arg1:{[key: string]: any},arg2:number,arg3:string):Promise<string>;
 
 export function SaveTemplateToFile(arg1:string,arg2:string,arg3:string):Promise<string>;
 

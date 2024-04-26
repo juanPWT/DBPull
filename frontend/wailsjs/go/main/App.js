@@ -22,8 +22,16 @@ export function GetColumnTable(arg1, arg2) {
   return window['go']['main']['App']['GetColumnTable'](arg1, arg2);
 }
 
+export function GetTypeColumn(arg1, arg2) {
+  return window['go']['main']['App']['GetTypeColumn'](arg1, arg2);
+}
+
 export function GetValuesTable(arg1, arg2) {
   return window['go']['main']['App']['GetValuesTable'](arg1, arg2);
+}
+
+export function InsertRow(arg1, arg2, arg3) {
+  return window['go']['main']['App']['InsertRow'](arg1, arg2, arg3);
 }
 
 export function SaveTemplateToFile(arg1, arg2, arg3) {

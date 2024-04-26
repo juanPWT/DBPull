@@ -129,10 +129,10 @@ func (a *App) AllConfigDB() []DatabaseConfig {
 
 // delete data from configDB.json
 func (a *App) DeleteConfigDB(id int) bool {
-	data := a.AllConfigDB()
+	dataConf := a.AllConfigDB()
 	var newData []DatabaseConfig
 
-	for _, v := range data {
+	for _, v := range dataConf {
 		if v.Id != id {
 			newData = append(newData, v)
 		}
@@ -177,11 +177,11 @@ var DB *gorm.DB
 
 func (a *App) GetAllTable(id int) []string {
 	// get data by id
-	data := a.AllConfigDB()
+	dataConf := a.AllConfigDB()
 	var url string
 	var database string
 
-	for _, v := range data {
+	for _, v := range dataConf {
 		if v.Id == id {
 			url = v.Url
 			database = v.Db
@@ -223,11 +223,11 @@ func (a *App) GetAllTable(id int) []string {
 // get table column
 
 func (a *App) GetColumnTable(table string, id int) []string {
-	data := a.AllConfigDB()
+	dataConf := a.AllConfigDB()
 	var db string
 	var query string
 
-	for _, v := range data {
+	for _, v := range dataConf {
 		if v.Id == id {
 			db = v.Db
 		}
@@ -260,11 +260,11 @@ func (a *App) GetColumnTable(table string, id int) []string {
 func (a *App) GetValuesTable(table string, id int) []map[string]interface{} {
 	columns := a.GetColumnTable(table, id)
 
-	data := a.AllConfigDB()
+	dataConf := a.AllConfigDB()
 	var db string
 	var query string
 
-	for _, v := range data {
+	for _, v := range dataConf {
 		if v.Id == id {
 			db = v.Db
 		}
@@ -325,4 +325,102 @@ func (a *App) GetValuesTable(table string, id int) []map[string]interface{} {
 	}
 
 	return results
+}
+
+type TableType struct {
+	Column string `json:"column"`
+	Type   string `json:"type"`
+}
+
+// get sructure column
+func (a *App) GetTypeColumn(table string, id int) []TableType {
+	columns := a.GetColumnTable(table, id)
+	dataConf := a.AllConfigDB()
+	var query string
+	var db string
+
+	for _, v := range dataConf {
+		if v.Id == id {
+			db = v.Db
+		}
+	}
+
+	if db == "mysql" {
+		query = "SELECT " + strings.Join(columns, ", ") + " FROM " + table
+	} else if db == "postgres" {
+		// tranfroms string to string with doubel quote "id", "name"
+		var columnList []string
+		for _, v := range columns {
+			columnList = append(columnList, fmt.Sprintf("\"%s\"", v))
+		}
+		query = "SELECT " + strings.Join(columnList, ", ") + " FROM \"" + table + "\""
+	}
+
+	rows, err := DB.Raw(query).Rows()
+	if err != nil {
+		fmt.Println("Error:", err)
+		return nil
+	}
+
+	defer rows.Close()
+
+	// get column type
+	var types []TableType
+
+	columnTypes, err := rows.ColumnTypes()
+	if err != nil {
+		fmt.Println("Error:", err)
+		return nil
+	}
+
+	for _, v := range columnTypes {
+		types = append(types, TableType{
+			Column: v.Name(),
+			Type:   v.DatabaseTypeName(),
+		})
+	}
+
+	return types
+}
+
+func (a *App) InsertRow(data map[string]interface{}, id int, table string) string {
+	// get all data
+	var db string
+	var query string
+
+	columns := a.GetColumnTable(table, id)
+	dataConf := a.AllConfigDB()
+
+	for _, v := range dataConf {
+		if v.Id == id {
+			db = v.Db
+		}
+	}
+
+	// shorten data to columns
+	var shortenData []interface{}
+	for _, v := range columns {
+		shortenData = append(shortenData, data[v])
+	}
+
+	if db == "mysql" {
+		query = "INSERT INTO " + table + " (" + strings.Join(columns, ", ") + ") VALUES (" + strings.Repeat("?, ", len(columns)-1) + "?)"
+	} else if db == "postgres" {
+		// tranfroms string to string with doubel quote "id", "name"
+		var columnList []string
+		for _, v := range columns {
+			columnList = append(columnList, fmt.Sprintf("\"%s\"", v))
+		}
+		query = "INSERT INTO \"" + table + "\" (" + strings.Join(columnList, ", ") + ") VALUES (" + strings.Repeat("?, ", len(columns)-1) + "?)"
+	}
+
+	fmt.Println(query)
+
+	err := DB.Exec(query, shortenData...)
+	if err.Error != nil {
+		return fmt.Sprintf("Error: %s", err.Error)
+	}
+
+	msg := []byte("Success: success insert row to table")
+	return string(msg)
 }

@@ -36,7 +36,7 @@ const Sidebar: React.FC<SidebarProps> = ({ id }) => {
   };
 
   return (
-    <div className="w-full rounded-md ring-1 ring-slate-900 bg-gray-100 p-3 flex flex-col max-w-xs">
+    <div className="w-full rounded-md ring-1 ring-slate-900 bg-gray-100 p-3 hidden md:flex flex-col max-w-xs">
       <h1 className="text-lg font-semibold">{nameConfig}</h1>
       <div className="mt-2 w-full grid grid-cols-1 gap-2 ">
         {tables.length === 0 ? (
