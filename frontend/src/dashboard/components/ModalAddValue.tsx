@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 
 type ModalAddValueProps = {
   table: string | null;
-  columns: ColumnType[];
+  columns: ColumnType[] | undefined;
   id: number;
 };
 
@@ -40,13 +40,12 @@ const ModalAddValue: React.FC<ModalAddValueProps> = ({
   const { register, handleSubmit, reset } = useForm();
 
   const onSubmit = (data: any) => {
-    console.log(data);
     if (table !== null) {
       InsertRow(data, id, table).then((res: string) => {
         reset();
         if (res.includes("success")) {
           toast.success(res);
-        } else if (res.includes("error")) {
+        } else {
           toast.error(res);
         }
       });
@@ -64,7 +63,7 @@ const ModalAddValue: React.FC<ModalAddValueProps> = ({
           className="w-full bg-gray-100 p-2 shadow-md "
         >
           <div className="w-full grid grid-cols-2 gap-3">
-            {columns.map((columns, i) => {
+            {columns?.map((columns, i) => {
               const type = modalTypeSelection(columns.type);
 
               return (

@@ -5,7 +5,7 @@ import { ColumnType } from "./Table";
 type StructureProps = {
   id: number;
   table: string | null;
-  columnType: Array<ColumnType>;
+  columnType: Array<ColumnType> | undefined;
 };
 
 const CardStructure = ({ column, type }: { column: string; type: string }) => {
@@ -33,8 +33,8 @@ const Structure: React.FC<StructureProps> = ({ id, table, columnType }) => {
       <NavTable id={id} table={table ?? "undefined table"} />
       <div className="w-full overflow-x-auto">
         <div className="w-full bg-white grid grid-cols-1 gap-3 rounded-md p-3 shadow-md">
-          {columnType.length !== 0 ? (
-            columnType.map((data, i) => {
+          {columnType?.length !== 0 ? (
+            columnType?.map((data, i) => {
               return (
                 <CardStructure
                   key={i}

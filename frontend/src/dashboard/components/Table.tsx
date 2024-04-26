@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useQuery } from "../../utils/useQuery";
 import {
   GetColumnTable,
@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import Values from "./Values";
 import Structure from "./Structure";
 import ModalAddValue from "./ModalAddValue";
+import { useQuery as query } from "react-query";
 
 type TableProps = {
   id: number;
@@ -20,41 +21,42 @@ export type ColumnType = {
 };
 
 const Table: React.FC<TableProps> = ({ id }) => {
-  const [column, setColumn] = useState<Array<string>>([]);
-  const [values, setValues] = useState<Array<any>>([]);
-  const [columnType, setColumnTypes] = useState<Array<any>>([]);
   const table = useQuery().get("table");
   const nav = useQuery().get("nav");
 
-  useEffect(() => {
-    if (table != null) {
-      // get column
-      GetColumnTable(table, id).then((res: Array<string>) => {
-        if (res != null) {
-          setColumn(res);
-        } else {
-          setColumn([]);
-          toast.error("error: failed to read, chack your database");
-        }
-      });
-      // get value
-      GetValuesTable(table, id).then((res: Array<any>) => {
-        if (res != null) {
-          setValues(res);
-        } else {
-          setValues([]);
-        }
-      });
-      // get column type
-      GetTypeColumn(table, id).then((res: Array<ColumnType>) => {
-        if (res != null) {
-          setColumnTypes(res);
-        } else {
-          setColumnTypes([]);
-        }
-      });
+  // query
+  const { data: column } = query(["getColumnTable", table, id], async () => {
+    if (table == null) return [];
+    const res: Array<string> = await GetColumnTable(table, id);
+    if (res != null) {
+      return res;
+    } else {
+      toast.error("error: failed to read, chack your database");
+      return [];
     }
-  }, [table, GetColumnTable, GetValuesTable, id, GetTypeColumn]);
+  });
+
+  const { data: values } = query(["getValueTable", table, id], async () => {
+    if (table == null) return [];
+    const res: Array<any> = await GetValuesTable(table, id);
+    if (res != null) {
+      return res;
+    } else {
+      toast.error("error: failed to read, chack your database");
+      return [];
+    }
+  });
+
+  const { data: columnType } = query(["getColumnType", table, id], async () => {
+    if (table == null) return [];
+    const res: Array<ColumnType> = await GetTypeColumn(table, id);
+    if (res != null) {
+      return res;
+    } else {
+      toast.error("error: failed to read, chack your database");
+      return [];
+    }
+  });
 
   if (nav === "values" || nav === null) {
     return (

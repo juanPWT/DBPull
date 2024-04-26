@@ -4,8 +4,8 @@ import NavTable from "./NavTable";
 type ValuesProps = {
   id: number;
   table: string | null;
-  column: Array<string>;
-  values: Array<any>;
+  column: Array<string> | undefined;
+  values: Array<any> | undefined;
 };
 
 const Values: React.FC<ValuesProps> = ({ column, id, table, values }) => {
@@ -18,7 +18,7 @@ const Values: React.FC<ValuesProps> = ({ column, id, table, values }) => {
             <table className="w-full text-xs text-center text-gray-500 dark:text-gray-400 p-4">
               <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 ">
                 <tr>
-                  {column.length !== 0 && column ? (
+                  {column?.length !== 0 && column ? (
                     column.map((data, i) => {
                       return (
                         <th key={i} scope="col" className="py-3 px-6">
@@ -34,14 +34,14 @@ const Values: React.FC<ValuesProps> = ({ column, id, table, values }) => {
                 </tr>
               </thead>
               <tbody>
-                {values.length !== 0 ? (
-                  values.map((value, j) => {
+                {values?.length !== 0 ? (
+                  values?.map((value, j) => {
                     return (
                       <tr
                         key={j}
                         className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
                       >
-                        {column.map((data, i) => {
+                        {column?.map((data, i) => {
                           return (
                             <td key={i} className="py-4 px-6 sm:px-4">
                               {value[`${data}`] ? (
@@ -67,7 +67,7 @@ const Values: React.FC<ValuesProps> = ({ column, id, table, values }) => {
                   })
                 ) : (
                   <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                    <td className="py-4 px-6 sm:px-4" colSpan={column.length}>
+                    <td className="py-4 px-6 sm:px-4" colSpan={column?.length}>
                       No data
                     </td>
                   </tr>

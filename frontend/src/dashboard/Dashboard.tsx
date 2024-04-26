@@ -1,6 +1,5 @@
-import React, { useEffect } from "react";
 import PrimaryLayout from "../layout/PrimaryLayout";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 import Table from "./components/Table";
 import { FaArrowLeft } from "react-icons/fa";

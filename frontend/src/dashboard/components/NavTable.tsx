@@ -4,6 +4,7 @@ import { AiFillDatabase } from "react-icons/ai";
 import { LuRefreshCcw } from "react-icons/lu";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useQuery } from "../../utils/useQuery";
+import { useQueryClient } from "react-query";
 
 type NavTableProps = {
   table: string;
@@ -15,6 +16,7 @@ const NavTable: React.FC<NavTableProps> = ({ id, table }) => {
   const { pathname } = useLocation();
   const nameConfig = useQuery().get("db");
   const nav = useQuery().get("nav");
+  const queryClient = useQueryClient();
 
   const clickNavigateTable = (nav: string) => {
     const to = `${pathname}?db=${nameConfig}&table=${table}&nav=${nav}`;
@@ -22,7 +24,15 @@ const NavTable: React.FC<NavTableProps> = ({ id, table }) => {
   };
 
   const refreshTable = () => {
-    console.log("refresh table");
+    queryClient.invalidateQueries({
+      queryKey: ["getColumnTable", table, id],
+    });
+    queryClient.invalidateQueries({
+      queryKey: ["getValueTable", table, id],
+    });
+    queryClient.invalidateQueries({
+      queryKey: ["getColumnType", table, id],
+    });
   };
 
   return (
