@@ -10,7 +10,7 @@ const Dashboard = () => {
   return (
     <PrimaryLayout>
       <div className="w-full flex justify-between items-center mb-4">
-        <Link to={"/"} className="text-sm text-slate-900 ">
+        <Link to={"/"} className="text-sm text-slate-900 dark:text-slate-100">
           <FaArrowLeft size={20} />
         </Link>
       </div>

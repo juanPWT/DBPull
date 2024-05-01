@@ -1,6 +1,7 @@
 import React from "react";
 import NavTable from "./NavTable";
 import { ColumnType } from "./Table";
+import { getTheme } from "../../utils/getTheme";
 
 type StructureProps = {
   id: number;
@@ -29,7 +30,10 @@ const CardStructure = ({ column, type }: { column: string; type: string }) => {
 
 const Structure: React.FC<StructureProps> = ({ id, table, columnType }) => {
   return (
-    <div className="w-full flex flex-col items-center p-4 bg-gray-100 rounded-md gap-2 break-words">
+    <div
+      className="w-full flex flex-col items-center p-4 rounded-md gap-2 break-words"
+      style={{ backgroundColor: getTheme() }}
+    >
       <NavTable id={id} table={table ?? "undefined table"} />
       <div className="w-full overflow-x-auto">
         <div className="w-full bg-white grid grid-cols-1 gap-3 rounded-md p-3 shadow-md">
@@ -44,7 +48,7 @@ const Structure: React.FC<StructureProps> = ({ id, table, columnType }) => {
               );
             })
           ) : (
-            <div className="w-full flex justify-center">
+            <div className="w-full flex justify-center dark:text-slate-100">
               <h1>No Field in table please add field in this table</h1>
             </div>
           )}

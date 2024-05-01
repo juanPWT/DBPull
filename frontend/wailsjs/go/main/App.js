@@ -34,6 +34,10 @@ export function InsertRow(arg1, arg2, arg3) {
   return window['go']['main']['App']['InsertRow'](arg1, arg2, arg3);
 }
 
+export function RawQuery(arg1) {
+  return window['go']['main']['App']['RawQuery'](arg1);
+}
+
 export function SaveTemplateToFile(arg1, arg2, arg3) {
   return window['go']['main']['App']['SaveTemplateToFile'](arg1, arg2, arg3);
 }

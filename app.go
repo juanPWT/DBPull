@@ -414,8 +414,6 @@ func (a *App) InsertRow(data map[string]interface{}, id int, table string) strin
 		query = "INSERT INTO \"" + table + "\" (" + strings.Join(columnList, ", ") + ") VALUES (" + strings.Repeat("?, ", len(columns)-1) + "?)"
 	}
 
-	fmt.Println(query)
-
 	err := DB.Exec(query, shortenData...)
 	if err.Error != nil {
 		return fmt.Sprintf("Error: %s", err.Error)
@@ -423,4 +421,35 @@ func (a *App) InsertRow(data map[string]interface{}, id int, table string) strin
 
 	msg := []byte("Success: success insert row to table")
 	return string(msg)
+}
+
+type RawRes struct {
+	Status string                   `json:"status"`
+	Data   []map[string]interface{} `json:"data"`
+}
+
+func (a *App) RawQuery(query string) RawRes {
+	if query == "" {
+		return RawRes{
+			Status: "Error: query not null string",
+			Data:   nil,
+		}
+	}
+
+	var result []map[string]interface{}
+	err := DB.Raw(query).Scan(&result)
+
+	if err.Error != nil {
+		fmt.Println("Error: ", err.Error.Error())
+		return RawRes{
+			Status: "Error: " + err.Error.Error(),
+			Data:   nil,
+		}
+	}
+
+	return RawRes{
+		Status: "Success: query sql ok 200",
+		Data:   result,
+	}
+
 }

@@ -3,6 +3,7 @@ import CardTemplate from "./CardTemplate";
 import { Link, useNavigate } from "react-router-dom";
 import { AllConfigDB, DeleteAllConfig } from "../../../wailsjs/go/main/App";
 import toast from "react-hot-toast";
+import { getTheme } from "../../utils/getTheme";
 
 type configProps = {
   id: number;
@@ -31,8 +32,10 @@ const TemplateSave = () => {
   }, [AllConfigDB]);
 
   return (
-    <div className="w-full bg-gray-200 shadow-md rounded-md  p-4 flex flex-col">
-      <p className="text-sm text-slate-700 mt-1">Saving Template</p>
+    <div className="w-full bg-gray-200 shadow-md rounded-md  p-4 flex flex-col dark:bg-gray-800">
+      <p className="text-sm text-slate-700 mt-1 dark:text-slate-100">
+        Saving Template
+      </p>
       <div className="w-full grid grid-cols-1 gap-3 my-3">
         {allConfig.length !== 0 ? (
           allConfig.map((data) => {
@@ -47,7 +50,7 @@ const TemplateSave = () => {
             );
           })
         ) : (
-          <p className="text-center text-gray-500">
+          <p className="text-center text-gray-500 dark:text-slate-100">
             create new conection now 😁
           </p>
         )}
@@ -56,13 +59,19 @@ const TemplateSave = () => {
         <button
           type="button"
           onClick={handleClearAll}
-          className=" p-3 font-bold bg-red-700 text-white rounded-md shadow-md hover:bg-red-500 hover:text-red-700"
+          className={`p-3 font-bold text-white rounded-md shadow-md`}
+          style={{
+            backgroundColor: getTheme(),
+          }}
         >
           clear all
         </button>
         <Link
           to={"/new-connection"}
-          className=" p-3 font-bold bg-gray-700 text-white rounded-md shadow-md hover:bg-gray-500 hover:text-gray-700"
+          className={`p-3 font-bold bg-gray-700 text-white rounded-md shadow-md `}
+          style={{
+            border: `1px solid ${getTheme()}`,
+          }}
         >
           New Connection
         </Link>

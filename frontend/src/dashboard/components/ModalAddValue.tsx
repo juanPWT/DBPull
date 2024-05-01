@@ -5,6 +5,7 @@ import { ColumnType } from "./Table";
 import { useForm } from "react-hook-form";
 import { InsertRow } from "../../../wailsjs/go/main/App";
 import toast from "react-hot-toast";
+import { getTheme } from "../../utils/getTheme";
 
 type ModalAddValueProps = {
   table: string | null;
@@ -58,10 +59,7 @@ const ModalAddValue: React.FC<ModalAddValueProps> = ({
         label="add value"
         title={`Add Value ${table ?? "table undifined"}`}
       >
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="w-full bg-gray-100 p-2 shadow-md "
-        >
+        <form onSubmit={handleSubmit(onSubmit)} className="w-full p-2">
           <div className="w-full grid grid-cols-2 gap-3">
             {columns?.map((columns, i) => {
               const type = modalTypeSelection(columns.type);
@@ -80,7 +78,8 @@ const ModalAddValue: React.FC<ModalAddValueProps> = ({
           <div className="w-full my-2 flex justify-end ">
             <button
               type="submit"
-              className="p-3 bg-sky-500 rounded-md shadow-md hover:bg-sky-300 text-white font-semibold"
+              className="p-3  rounded-md shadow-md text-white font-semibold"
+              style={{ backgroundColor: getTheme() }}
             >
               Insert
             </button>
