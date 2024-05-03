@@ -3,6 +3,7 @@ import toast from "react-hot-toast";
 import { CiTrash } from "react-icons/ci";
 import { DeleteConfigDB } from "../../../wailsjs/go/main/App";
 import { useNavigate, Link } from "react-router-dom";
+import { getTheme } from "../../utils/getTheme";
 
 type CardTemplateProps = {
   id: number;
@@ -28,9 +29,12 @@ const CardTemplate: React.FC<CardTemplateProps> = ({ db, name, url, id }) => {
   };
 
   return (
-    <div className="w-full bg-gray-500 px-2 py-4 rounded-md shadow-md text-white flex items-center justify-between">
-      <Link to={`/dashboard/${id}?db=${name}`} className="flex group">
-        <p className="group-hover:text-sky-500">{name}</p>
+    <div className="w-full bg-gray-500 px-2 py-4 rounded-md shadow-md text-white flex items-center justify-between ">
+      <Link
+        to={`/dashboard/${id}?db=${name}&platfrom=${db}`}
+        className="flex group"
+      >
+        <p className="dark:text-slate-100">{name}</p>
         {/* db tag  */}
         {db === "mysql" ? (
           <span className="p-1 rounded-sm ring-2 text-orange-300 ring-orange-300 text-xs mx-2">
@@ -46,9 +50,10 @@ const CardTemplate: React.FC<CardTemplateProps> = ({ db, name, url, id }) => {
         <button
           type="button"
           onClick={handleDelete}
-          className="p-4 rounded-full hover:ring-2 hover:text-red-500 hover:bg-gray-500 hover:ring-red-500 bg-gray-900 text-white "
+          className="p-4 rounded-full hover:ring-2  hover:bg-gray-100  bg-gray-900 text-white"
+          style={{ border: `1px solid ${getTheme()}`, color: getTheme() }}
         >
-          <CiTrash />
+          <CiTrash size={15} />
         </button>
       </div>
     </div>

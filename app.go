@@ -414,8 +414,6 @@ func (a *App) InsertRow(data map[string]interface{}, id int, table string) strin
 		query = "INSERT INTO \"" + table + "\" (" + strings.Join(columnList, ", ") + ") VALUES (" + strings.Repeat("?, ", len(columns)-1) + "?)"
 	}
 
-	fmt.Println(query)
-
 	err := DB.Exec(query, shortenData...)
 	if err.Error != nil {
 		return fmt.Sprintf("Error: %s", err.Error)
@@ -423,4 +421,81 @@ func (a *App) InsertRow(data map[string]interface{}, id int, table string) strin
 
 	msg := []byte("Success: success insert row to table")
 	return string(msg)
+}
+
+type RawRes struct {
+	Status       string                   `json:"status"`
+	IsDirectData bool                     `json:"isDirectData"`
+	Columns      []string                 `json:"columns"`
+	Data         []map[string]interface{} `json:"data"`
+}
+
+func (a *App) RawQuery(query string) RawRes {
+	if query == "" {
+		return RawRes{
+			Status:       "Error: query not null string",
+			IsDirectData: false,
+			Columns:      nil,
+			Data:         nil,
+		}
+	}
+
+	// execute query
+	var result []map[string]interface{}
+	err := DB.Raw(query).Scan(&result)
+
+	if err.Error != nil {
+		return RawRes{
+			Status:       "Error: " + err.Error.Error(),
+			IsDirectData: false,
+			Columns:      nil,
+			Data:         nil,
+		}
+	}
+
+	if strings.Contains(query, "select") {
+		// get columns from query
+		rows, errRows := DB.Raw(query).Rows()
+		if errRows != nil {
+			return RawRes{
+				Status:       "Error: failed get rows",
+				IsDirectData: false,
+				Columns:      nil,
+				Data:         nil,
+			}
+		}
+
+		columns, errCol := rows.Columns()
+		if errCol != nil {
+			return RawRes{
+				Status:       "Error: cannot get columns",
+				IsDirectData: false,
+				Columns:      nil,
+				Data:         nil,
+			}
+		}
+
+		fmt.Println("columns: ", columns)
+
+		// check
+		fmt.Println("sorted result")
+		for _, v := range result {
+			fmt.Println(v)
+		}
+
+		return RawRes{
+			Status:       "Success: query sql ok 200",
+			IsDirectData: true,
+			Columns:      columns,
+			Data:         result,
+		}
+
+	}
+
+	return RawRes{
+		Status:       "Success: query sql ok 200",
+		IsDirectData: false,
+		Columns:      nil,
+		Data:         nil,
+	}
 }

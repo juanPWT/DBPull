@@ -1,5 +1,6 @@
 import React from "react";
 import NavTable from "./NavTable";
+import { getTheme } from "../../utils/getTheme";
 
 type ValuesProps = {
   id: number;
@@ -10,13 +11,16 @@ type ValuesProps = {
 
 const Values: React.FC<ValuesProps> = ({ column, id, table, values }) => {
   return (
-    <div className="w-full flex flex-col items-center p-4 bg-gray-100 rounded-md gap-2 break-words">
+    <div
+      className="w-full flex flex-col items-center p-4  rounded-md gap-2 break-words"
+      style={{ backgroundColor: getTheme() }}
+    >
       {table != null ? (
         <>
           <NavTable id={id} table={table ?? "undefined table"} />
           <div className="w-full overflow-x-auto">
-            <table className="w-full text-xs text-center text-gray-500 dark:text-gray-400 p-4">
-              <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 ">
+            <table className="w-full text-xs text-center text-gray-500 dark:text-slate-100 p-4">
+              <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-slate-900 dark:text-gray-400 ">
                 <tr>
                   {column?.length !== 0 && column ? (
                     column.map((data, i) => {
@@ -67,7 +71,10 @@ const Values: React.FC<ValuesProps> = ({ column, id, table, values }) => {
                   })
                 ) : (
                   <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                    <td className="py-4 px-6 sm:px-4" colSpan={column?.length}>
+                    <td
+                      className="py-4 px-6 sm:px-4 dark:text-slate-100"
+                      colSpan={column?.length}
+                    >
                       No data
                     </td>
                   </tr>
@@ -77,8 +84,8 @@ const Values: React.FC<ValuesProps> = ({ column, id, table, values }) => {
           </div>
         </>
       ) : (
-        <div className="w-full text-sm flex justify-center items-center text-gray-500 dark:text-gray-400">
-          <h1 className="text-xl font-semibold text-slate-900">Choose table</h1>
+        <div className="w-full text-sm flex justify-center items-center ">
+          <h1 className="text-xl font-semibold text-slate-100">Choose table</h1>
         </div>
       )}
     </div>

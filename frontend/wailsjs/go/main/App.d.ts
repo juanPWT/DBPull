@@ -18,6 +18,8 @@ export function GetValuesTable(arg1:string,arg2:number):Promise<Array<{[key: str
 
 export function InsertRow(arg1:{[key: string]: any},arg2:number,arg3:string):Promise<string>;
 
+export function RawQuery(arg1:string):Promise<main.RawRes>;
+
 export function SaveTemplateToFile(arg1:string,arg2:string,arg3:string):Promise<string>;
 
 export function TestConnectDB(arg1:string,arg2:main.DatabaseType):Promise<boolean>;

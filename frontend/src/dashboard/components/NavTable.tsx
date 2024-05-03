@@ -2,9 +2,10 @@ import React from "react";
 import { MdOutlineDataset } from "react-icons/md";
 import { AiFillDatabase } from "react-icons/ai";
 import { LuRefreshCcw } from "react-icons/lu";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useQuery } from "../../utils/useQuery";
 import { useQueryClient } from "react-query";
+import SqlCodeEditor from "../../SQL/SqlCodeEditor";
 
 type NavTableProps = {
   table: string;
@@ -16,10 +17,11 @@ const NavTable: React.FC<NavTableProps> = ({ id, table }) => {
   const { pathname } = useLocation();
   const nameConfig = useQuery().get("db");
   const nav = useQuery().get("nav");
+  const platfrom = useQuery().get("platfrom");
   const queryClient = useQueryClient();
 
   const clickNavigateTable = (nav: string) => {
-    const to = `${pathname}?db=${nameConfig}&table=${table}&nav=${nav}`;
+    const to = `${pathname}?db=${nameConfig}&platfrom=${platfrom}&table=${table}&nav=${nav}`;
     navigate(to);
   };
 
@@ -38,7 +40,7 @@ const NavTable: React.FC<NavTableProps> = ({ id, table }) => {
   return (
     <div className="w-full flex flex-col gap-3">
       <div className="w-full text-center">
-        <h1 className="text-xl text-slate-900 font-semibold">
+        <h1 className="text-xl text-slate-100 font-semibold ">
           {nav === "values" || nav === null
             ? `values ${table}`
             : `structure ${table}`}
@@ -59,14 +61,14 @@ const NavTable: React.FC<NavTableProps> = ({ id, table }) => {
                 : "hover:bg-gray-100 hover:text-gray-600"
             } `}
           >
-            <MdOutlineDataset size={10} />
+            <MdOutlineDataset size={14} />
           </button>
           <button
             type="button"
             onClick={() => clickNavigateTable("structure")}
             className={`rounded-md ${
               nav === "structure"
-                ? " bg-gray-100 text-gray-600"
+                ? " bg-gray-100 text-gray-600  "
                 : "bg-gray-600 text-white"
             } p-2 ${
               nav === "values"
@@ -74,23 +76,20 @@ const NavTable: React.FC<NavTableProps> = ({ id, table }) => {
                 : "hover:bg-gray-100 hover:text-gray-600"
             } `}
           >
-            <AiFillDatabase size={10} />
+            <AiFillDatabase size={14} />
           </button>
         </div>
-        {
-          // refresh button
-          nav === "values" || nav === null ? (
-            <div className="flex items-center p-2">
-              <button
-                type="button"
-                onClick={refreshTable}
-                className="rounded-md bg-gray-600 text-gray-100 p-2 hover:bg-gray-100 hover:text-gray-600"
-              >
-                <LuRefreshCcw size={14} />
-              </button>
-            </div>
-          ) : null
-        }
+
+        <div className="flex items-center p-2 gap-2">
+          <SqlCodeEditor />
+          <button
+            type="button"
+            onClick={refreshTable}
+            className="rounded-md bg-gray-600 text-gray-100 p-2 hover:bg-gray-100 hover:text-gray-600"
+          >
+            <LuRefreshCcw size={14} />
+          </button>
+        </div>
       </div>
     </div>
   );

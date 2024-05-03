@@ -26,14 +26,14 @@ const Input: React.FC<InputProps> = ({
 }) => {
   return (
     <div className="w-full flex flex-col gap-2">
-      <label htmlFor={id} className="text-sm font-semibold">
+      <label htmlFor={id} className="text-sm font-semibold dark:text-slate-100">
         {id} :{" "}
       </label>
       <input
         id={id}
         {...register(id)}
         type={type}
-        className="focus:outline-none ring-1 placeholder:text-gray-400 p-2 w-full text-slate-900 focus:ring-sky-500 rounded-md shadow-md"
+        className="focus:outline-none ring-1 placeholder:text-gray-400 p-2 w-full text-slate-900 focus:ring-sky-500 rounded-md shadow-md dark:bg-slate-900 dark:text-slate-100"
         placeholder={placeholder}
         value={value}
       />
