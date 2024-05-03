@@ -10,11 +10,12 @@ import toast from "react-hot-toast";
 
 type RawRes = {
   status: string;
+  isDirectData: Boolean;
+  columns: Array<string>;
   data: Array<any>;
 };
 
 const ResultSQL = () => {
-  const [column, setColumn] = useState<Array<string>>([]);
   const query = useQuery().get("query");
   const platfrom = useQuery().get("platfrom");
   const location = useLocation();
@@ -25,26 +26,41 @@ const ResultSQL = () => {
       if (!query || !platfrom) return;
       const res: RawRes = await RawQuery(query);
 
-      if (res.status.includes("Success")) {
+      if (res.status.includes("Success") && res.isDirectData === true) {
         toast.success(res.status);
 
         if (res.data != null) {
-          // get key object
-          const key = Object.keys(res.data[0]);
-          setColumn(key);
-
           return res;
         } else {
-          const resultFalse: RawRes = {
+          const resultDataIsNull: RawRes = {
             status: "Error but ok: maybe the data you want not exist",
+            isDirectData: res.isDirectData,
+            columns: [],
             data: [],
           };
 
-          return resultFalse;
+          return resultDataIsNull;
         }
+      } else if (res.status.includes("Success") && res.isDirectData === false) {
+        toast.success(res.status);
+
+        const resultQueryNotDirectData: RawRes = {
+          status: res.status,
+          isDirectData: res.isDirectData,
+          columns: [],
+          data: [],
+        };
+
+        return resultQueryNotDirectData;
       } else if (res.status.includes("Error")) {
         toast.error(res.status);
-        return res;
+        const resultError: RawRes = {
+          status: res.status,
+          isDirectData: res.isDirectData,
+          columns: [],
+          data: [],
+        };
+        return resultError;
       }
     },
     { refetchOnWindowFocus: false }
@@ -67,7 +83,7 @@ const ResultSQL = () => {
           </p>
         </div>
         {result?.data.length !== 0 ? (
-          <TableResult Column={column} Data={result?.data} />
+          <TableResult Column={result?.columns} Data={result?.data} />
         ) : (
           <div className="w-full mt-10 bg-slate-100 rounded-md p-4 shadow-md flex dark:bg-slate-700 justify-center">
             <p className="text-lg font-semibold dark:text-slate-100">No Data</p>

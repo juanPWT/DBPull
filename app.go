@@ -424,32 +424,78 @@ func (a *App) InsertRow(data map[string]interface{}, id int, table string) strin
 }
 
 type RawRes struct {
-	Status string                   `json:"status"`
-	Data   []map[string]interface{} `json:"data"`
+	Status       string                   `json:"status"`
+	IsDirectData bool                     `json:"isDirectData"`
+	Columns      []string                 `json:"columns"`
+	Data         []map[string]interface{} `json:"data"`
 }
 
 func (a *App) RawQuery(query string) RawRes {
 	if query == "" {
 		return RawRes{
-			Status: "Error: query not null string",
-			Data:   nil,
+			Status:       "Error: query not null string",
+			IsDirectData: false,
+			Columns:      nil,
+			Data:         nil,
 		}
 	}
 
+	// execute query
 	var result []map[string]interface{}
 	err := DB.Raw(query).Scan(&result)
 
 	if err.Error != nil {
-		fmt.Println("Error: ", err.Error.Error())
 		return RawRes{
-			Status: "Error: " + err.Error.Error(),
-			Data:   nil,
+			Status:       "Error: " + err.Error.Error(),
+			IsDirectData: false,
+			Columns:      nil,
+			Data:         nil,
 		}
 	}
 
-	return RawRes{
-		Status: "Success: query sql ok 200",
-		Data:   result,
+	if strings.Contains(query, "select") {
+		// get columns from query
+		rows, errRows := DB.Raw(query).Rows()
+		if errRows != nil {
+			return RawRes{
+				Status:       "Error: failed get rows",
+				IsDirectData: false,
+				Columns:      nil,
+				Data:         nil,
+			}
+		}
+
+		columns, errCol := rows.Columns()
+		if errCol != nil {
+			return RawRes{
+				Status:       "Error: cannot get columns",
+				IsDirectData: false,
+				Columns:      nil,
+				Data:         nil,
+			}
+		}
+
+		fmt.Println("columns: ", columns)
+
+		// check
+		fmt.Println("sorted result")
+		for _, v := range result {
+			fmt.Println(v)
+		}
+
+		return RawRes{
+			Status:       "Success: query sql ok 200",
+			IsDirectData: true,
+			Columns:      columns,
+			Data:         result,
+		}
+
 	}
 
+	return RawRes{
+		Status:       "Success: query sql ok 200",
+		IsDirectData: false,
+		Columns:      nil,
+		Data:         nil,
+	}
 }

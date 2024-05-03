@@ -11,7 +11,7 @@ type StructureProps = {
 
 const CardStructure = ({ column, type }: { column: string; type: string }) => {
   return (
-    <div className="max-w-sm flex justify-between items-center p-3 ring-1 ring-slate-900 rounded-md shadow-md">
+    <div className="max-w-sm flex justify-between items-center p-3 ring-1 ring-slate-900 rounded-md shadow-md dark:ring-slate-100 dark:text-slate-100">
       <div className="flex gap-3 items-center">
         <span className="font-bold text-sm">{column}</span>
         <p className="font-light text-md">{type}</p>
@@ -31,12 +31,12 @@ const CardStructure = ({ column, type }: { column: string; type: string }) => {
 const Structure: React.FC<StructureProps> = ({ id, table, columnType }) => {
   return (
     <div
-      className="w-full flex flex-col items-center p-4 rounded-md gap-2 break-words"
+      className="w-full flex flex-col items-center p-4 rounded-md gap-2 break-words "
       style={{ backgroundColor: getTheme() }}
     >
       <NavTable id={id} table={table ?? "undefined table"} />
       <div className="w-full overflow-x-auto">
-        <div className="w-full bg-white grid grid-cols-1 gap-3 rounded-md p-3 shadow-md">
+        <div className="w-full bg-white grid grid-cols-1 gap-3 rounded-md p-3 shadow-md dark:bg-slate-900">
           {columnType?.length !== 0 ? (
             columnType?.map((data, i) => {
               return (

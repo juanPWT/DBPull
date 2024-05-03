@@ -1,7 +1,7 @@
 import React from "react";
 
 type TableResultProps = {
-  Column: Array<string>;
+  Column: Array<string> | undefined;
   Data: Array<any> | undefined;
 };
 
@@ -11,40 +11,52 @@ const TableResult: React.FC<TableResultProps> = ({ Column, Data }) => {
       <table className="w-full text-xs text-center text-gray-500 dark:text-slate-100 p-4">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-slate-900 dark:text-gray-400 ">
           <tr>
-            {Column.map((data, i) => {
-              return (
-                <th key={i} scope="col" className="py-3 px-6">
-                  {data}
-                </th>
-              );
-            })}
+            {Column?.length !== 0 ? (
+              Column?.map((data, i) => {
+                return (
+                  <th key={i} scope="col" className="py-3 px-6">
+                    {data}
+                  </th>
+                );
+              })
+            ) : (
+              <th scope="col" className="py-3 px-6">
+                No Column
+              </th>
+            )}
           </tr>
         </thead>
         <tbody>
           {Data?.length !== 0 ? (
-            Data?.map((value, i) => {
+            Data?.map((value, j) => {
               return (
                 <tr
-                  key={i}
+                  key={j}
                   className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
                 >
-                  {Column.map((data, i) => {
-                    return (
-                      <td key={i} className="py-4 px-6 sm:px-4">
-                        {value[`${data}`] ? (
-                          String(value[`${data}`])
-                        ) : value[`${data}`] === false ? (
-                          <span className="font-light text-red-500">false</span>
-                        ) : value[`${data}`] === true ? (
-                          <span className="font-light text-green-500">
-                            true
-                          </span>
-                        ) : (
-                          <span className="font-light text-red-500">null</span>
-                        )}
-                      </td>
-                    );
-                  })}
+                  {Column?.length !== 0
+                    ? Column?.map((data, i) => {
+                        return (
+                          <td key={i} className="py-4 px-6 sm:px-4">
+                            {value[`${data}`] ? (
+                              String(value[`${data}`])
+                            ) : value[`${data}`] === false ? (
+                              <span className="font-light text-red-500">
+                                false
+                              </span>
+                            ) : value[`${data}`] === true ? (
+                              <span className="font-light text-green-500">
+                                true
+                              </span>
+                            ) : (
+                              <span className="font-light text-red-500">
+                                null
+                              </span>
+                            )}
+                          </td>
+                        );
+                      })
+                    : "No Data"}
                 </tr>
               );
             })
